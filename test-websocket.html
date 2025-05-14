@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Kafka Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+    <h2>Kafka WebSocket Test (Tenant: site_1)</h2>
+    <div id="output"></div>
+
+    <script>
+        var socket = new SockJS('http://localhost:8081/ws');
+        var stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+
+            stompClient.subscribe('/topic/site_1', function (message) {
+                const msg = JSON.parse(message.body);
+                document.getElementById('output').innerHTML += '<p><strong>ID:</strong> ' + msg.id + ', <strong>Data:</strong> ' + msg.data + '</p>';
+            });
+        });
+    </script>
+</body>
+</html>
